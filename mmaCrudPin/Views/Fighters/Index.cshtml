@@ -1,0 +1,130 @@
+﻿@model IEnumerable<mmaCrudPin.Models.mmaFighter>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1 style="text-align:center;">Lista MMA boraca</h1>
+
+<p>
+    <a class="btn  btn-outline-success" asp-action="Create">Kreiraj novog MMA borca</a>
+</p>
+<form asp-action="Search" method="get">
+    <div class="input-group mb-2">
+        <input class="form-control" type="text" name="name" placeholder="Pretraži" value="@ViewBag.fighterName" />
+        <span class="text-danger" data-valmsg-for="name" data-valmsg-replace="true"></span>
+    </div>
+</form>
+@if (!string.IsNullOrEmpty(ViewBag.Message) || ViewBag.Message != null)
+{
+    <div class="alert alert-warning"><span>@Html.Raw(ViewBag.Message)</span></div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                <b>@Html.DisplayNameFor(model => model.figtherName)</b>
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.category)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.created)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.modified)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.worth_salary)
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr id="row_@item.fighterId">
+                <td>
+                    <strong>@Html.DisplayFor(modelItem => item.figtherName)</strong>
+                </td>
+                <td>
+                    <span class="badge badge-secondary">@Html.DisplayFor(modelItem => item.category)</span>
+                </td>
+                <td>
+                    @item.created
+                </td>
+                <td>
+                    @item.modified
+                </td>
+                <td>
+                    <h5><span class="badge badge-success">@Html.DisplayFor(modelItem => item.worth_salary)</span></h5>
+                </td>
+                <td>
+                    <a class="btn btn-outline-warning btn-sm" asp-action="Edit" asp-route-id="@item.fighterId">Uredi</a>
+                    <a class="btn btn-outline-primary btn-sm" asp-action="Details" asp-route-id="@item.fighterId">Detalji</a>
+                    <a class="btn btn-outline-danger btn-sm" role="button" id="deletebutton" onclick="Delete(@item.fighterId)">Izbriši</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+@foreach (var x in Model)
+{
+    <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <a href="#" class="close" data-dismiss="modal">&times;</a>
+                </div>
+                <div class="modal-body">
+                    <h4>Jeste li sigurni da želite obrisati @x.figtherName?</h4>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Odustani</a>
+                    <input type="submit" class="btn btn-outline-danger" onclick="DeleteFighter()" value="Da" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+}
+
+
+@*skriveno polje za spremanje fighterId*@
+<input type="hidden" id="hiddenFighterId" />
+
+
+@section Scripts{
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+
+        <script>
+
+            var Delete = (FighterId) => {
+
+                $("#hiddenFighterId").val(FighterId);
+                $("#myModal").modal('show');
+
+            }
+
+            var DeleteFighter = () => {
+
+                var FighterId = $("#hiddenFighterId").val();
+
+                $.ajax({
+
+                    type: "POST",
+                    url: "/Fighters/Index",
+                    data: { Id: FighterId },
+                    success: (result) => {
+                        $("#myModal").modal("hide");
+                        $("#row_" + FighterId).remove();
+                    }
+
+                })
+
+            }
+
+        </script>
+    }
+}

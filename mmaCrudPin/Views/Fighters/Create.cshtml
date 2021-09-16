@@ -1,0 +1,53 @@
+﻿@model mmaCrudPin.Models.mmaFighter
+
+@{
+    ViewData["Title"] = "Create";
+}
+
+<h2>Kreiraj MMA borca</h2>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="figtherName" class="control-label"></label>
+                <input asp-for="figtherName" class="form-control" />
+                <span asp-validation-for="figtherName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="age" class="control-label"></label>
+                <input asp-for="age" class="form-control" />
+                <span asp-validation-for="age" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="mma_record" class="control-label"></label>
+                <input asp-for="mma_record" class="form-control" />
+                <span asp-validation-for="mma_record" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="category" class="control-label"></label>
+                <select asp-for="category"
+                        class="form-control"
+                        asp-items="Html.GetEnumSelectList<Mma_category>()">
+                    <option>Odaberi kategoriju</option>
+                </select>
+                <span asp-validation-for="category" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="worth_salary" class="control-label"></label>
+                <input asp-for="worth_salary" class="form-control" />
+                <span asp-validation-for="worth_salary" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Kreiraj" class="btn btn-outline-primary" />
+                <a class="btn btn-outline-success" asp-action="Index">Vrati na listu</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
